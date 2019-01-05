@@ -1,7 +1,7 @@
 {
   "name": "etn-desktop",
   "productName": "Electroneum Desktop",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Simple electron app that gives statistical info for the Electroneum blockchain.",
   "main": "src/index.js",
   "scripts": {
