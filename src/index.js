@@ -1,10 +1,18 @@
-import { app, BrowserWindow } from 'electron';
+import { app, autoUpdater, BrowserWindow } from 'electron';
+const electronLogger = require('electron-log');
+electronLogger.info("Starting app " + app.getVersion());
 
-require('update-electron-app')({
+electronLogger.info("Load updater ...");
+const updater = require('update-electron-app')({
   repo: 'OfficiallyUndead/etn-desktop',
   updateInterval: '1 hour',
-  logger: require('electron-log')
-})
+  logger: electronLogger,
+});
+
+// Start express which handles serving pages and some custom requests (forwarding to avoid content control errors)
+electronLogger.info('Load express ...');
+const interfaceServer = require('./modules/interface/index');
+interfaceServer.start();
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
@@ -13,20 +21,26 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow;
+let mainWindow, updaterWindow;
 
 const createWindow = () => {
   // Create the browser window.
+  electronLogger.info("Set up main window");
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1200,
+    height: 480
   });
 
+  electronLogger.info("Load the content")
   // and load the index.html of the app.
-  mainWindow.loadURL(`file://${__dirname}/index.html`);
+  // mainWindow.loadURL(`file://${__dirname}/index.html`);
+  mainWindow.loadURL('http://localhost:3000/stats.html');
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  electronLogger.info("If dev mode, load the dev tools window");
+  if(isDev) {
+    mainWindow.webContents.openDevTools();
+  }
 
   // Emitted when the window is closed.
   mainWindow.on('closed', () => {
@@ -37,9 +51,11 @@ const createWindow = () => {
   });
 };
 
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
+electronLogger.info("Electron is ready, create the window");
 app.on('ready', createWindow);
 
 // Quit when all windows are closed.
@@ -59,5 +75,26 @@ app.on('activate', () => {
   }
 });
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
+function isDev() {
+  return process.mainModule.filename.indexOf('app.asar') === -1;
+}
+
+/**
+ * Updater stuff
+ */
+// autoUpdater.on("update-available", () => {
+//   isUpdating = true;
+//   if(justLaunched) {
+//     mainWindow.hide();
+//   }
+//   updaterWindow = new BrowserWindow({
+//     width: 200,
+//     height: 200,
+//     frame: false
+//   });
+//   updaterWindow.loadURL(`file://${__dirname}/updater.html`);
+//   electronLogger.info("New update available, Downloading now ...");
+// });
+// autoUpdater.on("download-progress", (ev, progressObj) => {
+//   console.log(progressObj);
+// });

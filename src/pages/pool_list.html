@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Pool List</title>
+    <meta name="description" content="Electroneum Blockchain App">
+    <meta name="author" content="Dean Cole">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.18/datatables.min.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" type="text/css" rel="stylesheet">
+    <style type="text/css"></style>
+</head>
+<body>
+    <nav class="navbar navbar-fixed navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Electroneum</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <!--<li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Pages
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/price.html">Action</a>
+                        <a class="dropdown-item" href="/blocks.html">Another action</a>
+                        <a class="dropdown-item" href="/stats.html">Something else here</a>
+                        <div class="dropdown-divider"></div>
+                    </div>
+                </li>-->
+                <li class="nav-item">
+                    <a class="nav-link" href="stats.html" tabindex="-1">Stats</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="tx_pool.html" tabindex="-1">Tx Pool</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="pool_list.html" tabindex="-1">Pool List</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="local_daemon.html" tabindex="-1">Local Daemon</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <table class="table">
+            <thead>
+                <th>Pool</th>
+                <th>Fee</th>
+                <th>Hashrate</th>
+                <th>Network Hashrate</th>
+                <th>Block Height</th>
+                <th>Block Found</th>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <!-- Insert this line above script imports  -->
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/datatables.min.js"></script>
+    <script type="text/javascript">
+        $.ajax({
+            method: "get",
+            url: "mpss",
+            dataType: "json",
+            success: function(data) {
+                for(var i=0; i < data.data.length; i++) {
+                    $(".table tbody").append("<tr><td>"+data.data[i].url+"</td><td>"+data.data[i].fee+"</td><td>"+data.data[i].hashrate+"</td><td>"+((100*data.data[i].hashrate)/data.hashrate).toFixed(2)+"%</td><td>"+data.height+"</td><td>"+timeSince2(data.data[i].timesincelast)+"</td></tr>");
+                }
+                var table = $(".table").DataTable();
+                table.order([3, 'desc']).draw();
+            }
+        });
+
+        function timeSince2(seconds) {
+            var interval = Math.floor(seconds / 31536000);
+
+            if (interval > 1) return interval + " y";
+            
+            interval = Math.floor(seconds / 2592000);
+            if (interval > 1) return interval + " months";
+            
+            interval = Math.floor(seconds / 86400);
+            if (interval > 1) return interval + " days";
+            
+            interval = Math.floor(seconds / 3600);
+            if (interval > 1) return interval + " hours";
+            
+            interval = Math.floor(seconds / 60);
+            if (interval > 1)  return interval + " min";
+            
+            return "NOW";
+        }
+    </script>
+    <!-- Insert this line after script imports -->
+    <script>if (window.module) module = window.module;</script>
+</body>
+</html>
