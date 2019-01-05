@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Blocks</title>
+    <meta name="description" content="Electroneum Blockchain App">
+    <meta name="author" content="Dean Cole">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" type="text/css" rel="stylesheet">
+    <style type="text/css"></style>
+</head>
+<body>
+    <nav class="navbar navbar-fixed navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Electroneum</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <!--<li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Pages
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/price.html">Action</a>
+                        <a class="dropdown-item" href="/blocks.html">Another action</a>
+                        <a class="dropdown-item" href="/stats.html">Something else here</a>
+                        <div class="dropdown-divider"></div>
+                    </div>
+                </li>-->
+                <li class="nav-item">
+                    <a class="nav-link" href="stats.html" tabindex="-1">Stats</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="tx_pool.html" tabindex="-1">Tx Pool</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="pool_list.html" tabindex="-1">Pool List</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="local_daemon.html" tabindex="-1">Local Daemon</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <table class="table table-striped">
+            <tbody></tbody>
+        </table>
+    </div>
+    <!-- Insert this line above script imports  -->
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $.ajax({
+            method: "get",
+            url: "/json_rpc/get_info",
+            success: function(data) {
+                $(".table tbody").append("<tr><td>Height</td><td>"+data.result.height+"</td></tr>");
+                $(".table tbody").append("<tr><td>Difficulty</td><td>"+data.result.difficulty+"</td></tr>");
+                $(".table tbody").append("<tr><td>Cumulative Difficulty</td><td>"+data.result.cumulative_difficulty+"</td></tr>");
+                $(".table tbody").append("<tr><td>Grey Peerlist Size</td><td>"+data.result.grey_peerlist_size+"</td></tr>");
+                $(".table tbody").append("<tr><td>White Peerlist Size</td><td>"+data.result.white_peerlist_size+"</td></tr>");
+                $(".table tbody").append("<tr><td>Incoming Connections Count</td><td>"+data.result.incoming_connections_count+"</td></tr>");
+                $(".table tbody").append("<tr><td>Outgoing Connections Count</td><td>"+data.result.outgoing_connections_count+"</td></tr>");
+                $(".table tbody").append("<tr><td>Top Block Hash</td><td>"+data.result.top_block_hash+"</td></tr>");
+                $(".table tbody").append("<tr><td>Tx Count</td><td>"+data.result.tx_count+"</td></tr>");
+                $(".table tbody").append("<tr><td>Tx Pool Size</td><td>"+data.result.tx_pool_size+"</td></tr>");
+            }
+        });
+    </script>
+    <!-- Insert this line after script imports -->
+    <script>if (window.module) module = window.module;</script>
+</body>
+</html>

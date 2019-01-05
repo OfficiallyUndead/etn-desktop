@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>TX Pool</title>
+    <meta name="description" content="Electroneum Blockchain App">
+    <meta name="author" content="Dean Cole">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" type="text/css" rel="stylesheet">
+    <style type="text/css"></style>
+</head>
+<body>
+    <nav class="navbar navbar-fixed navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Electroneum</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <!--<li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Pages
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/price.html">Action</a>
+                        <a class="dropdown-item" href="/blocks.html">Another action</a>
+                        <a class="dropdown-item" href="/stats.html">Something else here</a>
+                        <div class="dropdown-divider"></div>
+                    </div>
+                </li>-->
+                <li class="nav-item">
+                    <a class="nav-link" href="stats.html" tabindex="-1">Stats</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="tx_pool.html" tabindex="-1">Tx Pool</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="pool_list.html" tabindex="-1">Pool List</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="local_daemon.html" tabindex="-1">Local Daemon</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <table class="table">
+            <thead>
+                <th>age</th>
+                <th>transaction hash</th>
+                <th>fee</th>
+                <th>outputs</th>
+                <th>in(nonrct)/out</th>
+                <th>ring size</th>
+                <th>tx size [kB]</th>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <!-- Insert this line above script imports  -->
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $.ajax({
+            method: "get",
+            url: "https://blockexplorer.electroneum.com/api/mempool",
+            dataType: "json",
+            success: function(data) {
+                for(var i=0; i < data.data.txs.length; i++) {
+                    var row = data.data.txs[i];
+                    $(".table tbody").append("<tr><td>"+timeSince(row.timestamp*1000)+"</td><td>"+row.tx_hash+"</td><td>"+(row.tx_fee/100).toFixed(2)+"</td><td>"+(row.etn_outputs/100)+"</td><td>-</td><td>"+row.mixin+"</td><td>"+(row.tx_size/1024).toFixed(2)+"</td></tr>");
+                }
+            }
+        });
+       function timeSince(timeStamp) {
+            var now = new Date();
+            var timeStamp = new Date(timeStamp);
+            secondsPast = (now.getTime() - timeStamp.getTime()) / 1000;
+            if(secondsPast < 60){
+            return parseInt(secondsPast) + 's';
+            }
+            if(secondsPast < 3600){
+            return parseInt(secondsPast/60) + 'm';
+            }
+            if(secondsPast <= 86400){
+            return parseInt(secondsPast/3600) + 'h';
+            }
+            if(secondsPast > 86400){
+                day = timeStamp.getDate();
+                month = timeStamp.toDateString().match(/ [a-zA-Z]*/)[0].replace(" ","");
+                year = timeStamp.getFullYear() == now.getFullYear() ? "" :  " "+timeStamp.getFullYear();
+                return day + " " + month + year;
+            }
+        }
+    </script>
+    <!-- Insert this line after script imports -->
+    <script>if (window.module) module = window.module;</script>
+</body>
+</html>

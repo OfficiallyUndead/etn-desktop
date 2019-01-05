@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Stats</title>
+    <meta name="description" content="Electroneum blockchain stats">
+    <meta name="author" content="Dean Cole">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" type="text/css" rel="stylesheet">
+    <style type="text/css">
+        .stats-col {
+            max-height: 400px;
+            overflow: scroll;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-fixed navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Electroneum</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <!--<li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Pages
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/price.html">Action</a>
+                        <a class="dropdown-item" href="/blocks.html">Another action</a>
+                        <a class="dropdown-item" href="/stats.html">Something else here</a>
+                        <div class="dropdown-divider"></div>
+                    </div>
+                </li>-->
+                <li class="nav-item active">
+                    <a class="nav-link" href="stats.html" tabindex="-1">Stats</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="tx_pool.html" tabindex="-1">Tx Pool</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="pool_list.html" tabindex="-1">Pool List</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="local_daemon.html" tabindex="-1">Local Daemon</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-6">
+                <br />
+                <iframe id="coinlib-iframe" width="575" height="140" marginwidth="0" marginheight="0" frameborder="0" border="0" scrolling="no" style="border:0;margin:0;padding:0;" src="https://widget.coinlib.io/widget?type=single&amp;theme=light&amp;coin_id=124759&amp;pref_coin_id=1505" kwframeid="2"></iframe>
+                <br /><br />
+                <div class="draw-container"></div>
+                <script type="text/javascript">
+                const redrawElements = {
+                div: {
+                    id: 'mainContainer',
+                    'class': 'coinmarketcap-currency-widget',
+                    'data-currencyid': '2137',
+                    'data-base': 'BTC',
+                    'data-secondary': 'USD',
+                    'data-ticker': 'true',
+                    'data-rank': 'true',
+                    'data-marketcap': 'true',
+                    'data-volume': 'true',
+                    'data-stats': 'USD',
+                    'data-statsticker': 'true',
+                },
+                script: {
+                    src: 'https://files.coinmarketcap.com/static/widget/currency.js',
+                },
+                }
+                const redrawContainer = document.querySelector( '.draw-container' );
+
+                function redraw() {
+                redrawContainer.innerHTML = '';
+                
+                // Recreate elements
+                Object.keys( redrawElements ).forEach( el => {
+                    const domEl = document.createElement( el );
+                    // Iterate over attributes
+                    Object.keys( redrawElements[ el ] ).forEach( attr => {
+                    domEl.setAttribute( attr, redrawElements[ el ][ attr ] );
+                    } );
+                    redrawContainer.appendChild( domEl );
+                } );
+                }
+                redraw();
+                // Redraw every 30 seconds
+                setInterval( redraw, 30000 );
+                </script>
+            </div>
+
+            <div class="col-sm-6 stats-col">
+                <table class="table table-striped stats">
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Insert this line above script imports  -->
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $.ajax({
+            method: "get",
+            url: "http://supply.electroneum.com",
+            dataType: "json",
+            success: function(data) {
+                $(".stats").append("<tr><td style='border-top: 0px;'>Current Blockchian Height</td><td style='border-top: 0px;'>"+data.height+"</td></tr>");
+                $(".stats").append("<tr><td>Circulating Supply</td><td>"+numberWithCommas(data['circulating-supply'])+"</td></tr>");
+                getMoreStats();
+            }
+        });
+        function getMoreStats() {
+            $.ajax({
+                method: "get",
+                url: "http://etn.poolmining.network/electroneum/data/stats.json",
+                dataType: "json",
+                success: function(data) {
+                    for(var i=0; i < data.length; i++) {
+                        $(".stats").append("<tr><td>"+data[i].query+"</td><td>"+numberWithCommas(data[i].result)+"</td></tr>")
+                    }
+                }
+            });
+        }
+        function numberWithCommas(x) {
+            var parts = x.toString().split(".");
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            return parts.join(".");
+        }
+    </script>
+    <!-- Insert this line after script imports -->
+    <script>if (window.module) module = window.module;</script>
+</body>
+</html>
