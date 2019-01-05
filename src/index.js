@@ -1,5 +1,11 @@
 import { app, BrowserWindow } from 'electron';
 
+require('update-electron-app')({
+  repo: 'OfficiallyUndead/etn-desktop',
+  updateInterval: '1 hour',
+  logger: require('electron-log')
+})
+
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
   app.quit();
